@@ -379,6 +379,79 @@
   box-shadow: 0 4px 12px rgba(58,46,36,0.2);
   opacity: 1;
 }
+.home-events {
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--line);
+}
+.home-event-item {
+  font-size: 13px;
+  color: var(--blue);
+  padding: 3px 0;
+}
+.home-event-item .label {
+  color: var(--navy);
+  font-weight: 600;
+  margin-right: 6px;
+}
+.checkbox-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.checkbox-group input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--gold);
+}
+.toggle-group { margin-bottom: 12px; }
+.toggle-group-title {
+  font-size: 13px;
+  color: var(--navy);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.toggle-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-bottom: 1px dashed var(--line-light);
+}
+.toggle-item:last-child { border-bottom: none; }
+.toggle-item input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--gold);
+}
+.toggle-item label { flex: 1; cursor: pointer; }
+.collapsible-title {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.collapsible-title .arrow {
+  font-size: 12px;
+  color: var(--gold);
+  transition: transform 0.15s;
+  display: inline-block;
+}
+.collapsible-title .arrow.open {
+  transform: rotate(90deg);
+}
+
+
   /* ================= 手机适配 ================= */
 @media (max-width: 768px) {
   body { padding: 8px; }
@@ -525,8 +598,7 @@
           <option value="gold">金色（卡池）</option>
           <option value="red">红色（绘卷）</option>
           <option value="purple">紫色（联动）</option>
-          <option value="blue">蓝色（日常）</option>
-          <option value="green">绿色（自定义）</option>
+          <option value="blue">蓝色（活动）</option>
         </select>
         <button onclick="addEvent()">添加</button>
       </div>
@@ -548,22 +620,30 @@
     </div>
 
     <div class="settings-section">
-      <h2>自定义提醒</h2>
-      <div class="form-row">
-        <input type="text" id="customText" placeholder="提醒内容">
-        <input type="date" id="customDate">
-        <select id="customPriority">
-          <option value="必做">必做</option>
-          <option value="可选">可选</option>
-          <option value="最高">最高</option>
-        </select>
-        <button onclick="addCustom()">添加</button>
-      </div>
-      <div class="item-list" id="customList"></div>
+  <h2>自定义任务</h2>
+  <div class="form-row">
+    <input type="text" id="customText" placeholder="任务内容">
+    <input type="date" id="customDate">
+    <select id="customPriority">
+      <option value="必做">必做</option>
+      <option value="可选">可选</option>
+      <option value="最高">最高</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <span style="font-size:12px;color:var(--text-dim);">时段：</span>
+    <div class="checkbox-group">
+      <label><input type="checkbox" id="slotMorning" value="morning"> 早上</label>
+      <label><input type="checkbox" id="slotAfternoon" value="afternoon"> 下午</label>
+      <label><input type="checkbox" id="slotEvening" value="evening"> 晚上</label>
     </div>
+    <button onclick="addCustom()">添加</button>
+  </div>
+  <div class="item-list" id="customList"></div>
+</div>
 
     <div class="settings-section">
-      <h2>自定义寮活动（每周两次）</h2>
+      <h2>自定义寮活动</h2>
       <div class="form-row">
         <select id="liaoDay">
           <option value="5">周五</option>
@@ -581,37 +661,42 @@
       <div class="item-list" id="liaoList"></div>
     </div>
 
-    <div class="settings-section">
-      <h2>信息区内容</h2>
-      <div class="form-row">
-        <span class="info-label">备/备注</span>
-        <input type="text" id="setNote" placeholder="备注" style="flex:1;">
-      </div>
-      <div class="form-row">
-        <span class="info-label">核心目标</span>
-        <input type="text" id="setGoal" placeholder="核心目标" style="flex:1;">
-      </div>
-      <div class="form-row">
-        <span class="info-label navy">长期服排期</span>
-        <input type="text" id="setLong" placeholder="长期服排期" style="flex:1;">
-      </div>
-      <div class="form-row">
-        <span class="info-label gold">抽卡规划</span>
-        <input type="text" id="setGacha" placeholder="抽卡规划" style="flex:1;">
-      </div>
-      <div class="form-row">
-        <span class="info-label gold">养成优先级</span>
-        <input type="text" id="setGrow" placeholder="养成优先级" style="flex:1;">
-      </div>
-      <div class="form-row">
-        <span class="info-label navy">礼包屋倒计时</span>
-        <input type="number" id="setGiftDays" placeholder="还有几天" style="width:100px;">
-        <span style="font-size:12px;color:var(--text-dim);">天</span>
-        <button onclick="saveInfo()">保存</button>
-      </div>
-    </div>
+<div class="settings-section">
+  <h2>信息区内容</h2>
+  <div class="form-row">
+    <span class="info-label navy">排期记录</span>
+    <input type="text" id="setLong" placeholder="排期记录" style="flex:1;">
+  </div>
+  <div class="form-row">
+    <span class="info-label gold">抽卡规划</span>
+    <input type="text" id="setGacha" placeholder="抽卡规划" style="flex:1;">
+  </div>
+  <div class="form-row">
+    <span class="info-label gold">养成计划</span>
+    <input type="text" id="setGrow" placeholder="养成计划" style="flex:1;">
+  </div>
+  <div class="form-row">
+    <span class="info-label navy">礼包屋倒计时</span>
+    <input type="number" id="setGiftDays" placeholder="还有几天" style="width:100px;">
+    <span style="font-size:12px;color:var(--text-dim);">天</span>
+    <button onclick="saveInfo()">保存</button>
+  </div>
+</div>
 
-    <div class="footer">设置完成后返回首页查看效果</div>
+<div class="settings-section">
+  <h2 class="collapsible-title" onclick="toggleTaskPanel()">
+    <span class="arrow" id="taskPanelArrow">▶</span>
+    常用日常任务显示设置
+  </h2>
+  <div id="taskTogglePanel" style="display:none;">
+    <div id="taskToggleContainer"></div>
+    <div class="form-row" style="margin-top:10px;">
+      <button onclick="saveTaskVisible()">保存显示设置</button>
+    </div>
+  </div>
+</div>
+
+<div class="footer">设置完成后返回首页查看效果</div>
   </div>
 
 </div>
@@ -621,9 +706,19 @@
 function loadState() {
   try {
     const raw = localStorage.getItem("yys_checkin_v6");
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (!s.weeklyChecks) s.weeklyChecks = {};
+      if (!s.checks) s.checks = {};
+      if (!s.customs) s.customs = [];
+      if (!s.events) s.events = [];
+      if (!s.scrolls) s.scrolls = [];
+      if (!s.liaos) s.liaos = [];
+      return s;
+    }
   } catch(e) {}
   return {
+
     events: [
       { name: "咲叶绘卷", start: "2026-10-10", end: "2026-10-12", color: "red" },
       { name: "SSR咲叶", start: "2026-10-10", end: "2026-10-21", color: "gold" },
@@ -637,12 +732,12 @@ function loadState() {
       { day: 0, time: "19:30", text: "狭间暗域 + 阴阳寮宴会" },
     ],
     checks: {},
-    note: "",
-    goal: "",
     longTerm: "",
     gacha: "",
     grow: "",
-    giftDays: null
+giftDays: null,
+taskVisible: null,
+weeklyChecks: {}
   };
 }
 let state = loadState();
@@ -660,11 +755,23 @@ function formatDay(ds) {
   return `${d.getMonth()+1}.${d.getDate()} 周${["日","一","二","三","四","五","六"][d.getDay()]}`;
 }
 function getWeekday(ds) { return parseDate(ds).getDay(); }
+function getWeekStart(ds) {
+  const d = parseDate(ds);
+  const day = d.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  return dateStr(d);
+}
+
 function isScrollDay(ds) {
   return state.scrolls.some(s => {
     const diff = diffDays(s.start, ds);
     return diff >= 0 && diff < s.days;
   });
+}
+function formatDateDot(ds) {          
+  const d = parseDate(ds);
+  return `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())}`;
 }
 
 /* ================= 任务内容 ================= */
@@ -701,6 +808,30 @@ const WEEKLY_TASKS = {
   6: [ { text: "完成百鬼奕/百鬼棋局", priority: "必做" }, { text: "完成协同斗技", priority: "必做" }, { text: "斗技", priority: "必做" } ],
   0: [ { text: "检查本周所有内容", priority: "必做" } ]
 };
+function getAllFixedTasks() {
+  return {
+    morning: MORNING_TASKS.concat([MORNING_KIRIN]),
+    afternoon: AFTERNOON_TASKS,
+    evening: EVENING_TASKS.concat([EVENING_YINJIE]),
+    weekly: WEEKLY_TASKS
+  };
+}
+
+function initTaskVisible() {
+  if (state.taskVisible) return;
+  const all = getAllFixedTasks();
+  state.taskVisible = { morning: {}, afternoon: {}, evening: {}, weekly: {} };
+  all.morning.forEach(t => state.taskVisible.morning[t.text] = true);
+  all.afternoon.forEach(t => state.taskVisible.afternoon[t.text] = true);
+  all.evening.forEach(t => state.taskVisible.evening[t.text] = true);
+  Object.keys(all.weekly).forEach(day => {
+    state.taskVisible.weekly[day] = {};
+    all.weekly[day].forEach(t => state.taskVisible.weekly[day][t.text] = true);
+  });
+  saveState();
+}
+initTaskVisible();
+
 
 /* ================= 页面切换 ================= */
 function showPage(name) {
@@ -765,6 +896,7 @@ function renderCalendar() {
     numEl.textContent = dayNum;
     cell.appendChild(numEl);
 
+    // 活动渲染
     state.events.forEach(e => {
       if (ds >= e.start && ds <= e.end) {
         const chip = document.createElement("div");
@@ -772,13 +904,6 @@ function renderCalendar() {
         chip.textContent = e.name;
         cell.appendChild(chip);
       }
-    });
-
-    state.customs.filter(c => c.date === ds).forEach(c => {
-      const chip = document.createElement("div");
-      chip.className = "event-chip green";
-      chip.textContent = "★ " + c.text;
-      cell.appendChild(chip);
     });
 
     cell.onclick = () => {
@@ -813,6 +938,20 @@ function renderTasks() {
   const container = document.getElementById("taskContainer");
   container.innerHTML = "";
 
+  // 首页顶部：蓝色（活动）
+  const blueEvents = state.events.filter(e => e.color === "blue" && ds >= e.start && ds <= e.end);
+  if (blueEvents.length) {
+    const evBox = document.createElement("div");
+    evBox.className = "home-events";
+    blueEvents.forEach(e => {
+      const row = document.createElement("div");
+      row.className = "home-event-item";
+      row.innerHTML = `<span class="label">[活动]</span>${e.name} ${formatDateDot(e.start)}-${formatDateDot(e.end)}`;
+      evBox.appendChild(row);
+    });
+    container.appendChild(evBox);
+  }
+
   if (scroll) {
     // 绘卷期合并列表
     const list = [
@@ -828,41 +967,50 @@ function renderTasks() {
     ];
     if ([1,2,3,4].includes(weekday)) list.push({ text: "完成狩猎战（麒麟）", priority: "必做" });
     if ([5,6,0].includes(weekday)) list.push({ text: "完成阴界之门", priority: "必做" });
-    // 自定义寮活动
     state.liaos.filter(l => l.day === weekday).forEach(l => {
       list.push({ text: `完成阴阳寮活动：${l.text}（${l.time}）`, priority: "必做" });
     });
-    // 神秘商人
     if (weekday === 3 || weekday === 6) list.push({ text: "查看神秘商人", priority: "必做" });
+// 自定义任务
+state.customs.filter(c => c.date === ds).forEach(c => {
+  list.push({ text: "★ " + c.text, priority: c.priority });
+});
 
     container.appendChild(buildTimeBlock("绘卷期任务（合并）", list, ds, false, "scroll"));
   } else {
-    // 正常每日
-    const morning = [...MORNING_TASKS];
-    if ([1,2,3,4].includes(weekday)) morning.push(MORNING_KIRIN);
+    // 早上
+    const morning = MORNING_TASKS.filter(t => state.taskVisible.morning[t.text]);
+    if ([1,2,3,4].includes(weekday) && state.taskVisible.morning[MORNING_KIRIN.text]) {
+      morning.push(MORNING_KIRIN);
+    }
+    const customMorning = state.customs.filter(c => c.date === ds && (c.slots || []).includes("morning"));
+    customMorning.forEach(c => morning.push({ text: "★ " + c.text, priority: c.priority }));
     container.appendChild(buildTimeBlock("早上", morning, ds, active === "morning"));
 
-    container.appendChild(buildTimeBlock("下午", AFTERNOON_TASKS, ds, active === "afternoon"));
+    // 下午
+    const afternoon = AFTERNOON_TASKS.filter(t => state.taskVisible.afternoon[t.text]);
+    const customAfternoon = state.customs.filter(c => c.date === ds && (c.slots || []).includes("afternoon"));
+    customAfternoon.forEach(c => afternoon.push({ text: "★ " + c.text, priority: c.priority }));
+    container.appendChild(buildTimeBlock("下午", afternoon, ds, active === "afternoon"));
 
-    const evening = [...EVENING_TASKS];
-    if ([5,6,0].includes(weekday)) evening.push(EVENING_YINJIE);
+    // 晚上
+    const evening = EVENING_TASKS.filter(t => state.taskVisible.evening[t.text]);
+    if ([5,6,0].includes(weekday) && state.taskVisible.evening[EVENING_YINJIE.text]) {
+      evening.push(EVENING_YINJIE);
+    }
+    const customEvening = state.customs.filter(c => c.date === ds && (c.slots || []).includes("evening"));
+    customEvening.forEach(c => evening.push({ text: "★ " + c.text, priority: c.priority }));
     state.liaos.filter(l => l.day === weekday).forEach(l => {
       evening.push({ text: `完成阴阳寮活动：${l.text}（${l.time}）`, priority: "必做" });
     });
     if (weekday === 3 || weekday === 6) evening.push({ text: "查看神秘商人", priority: "必做" });
     container.appendChild(buildTimeBlock("晚上", evening, ds, active === "evening"));
-  }
 
-  // 每周任务
-  const weekly = WEEKLY_TASKS[weekday] || [];
-  if (weekly.length) {
-    container.appendChild(buildTimeBlock("每周任务", weekly, ds, false, "weekly"));
-  }
-
-  // 自定义提醒
-  const customs = state.customs.filter(c => c.date === ds);
-  if (customs.length) {
-    container.appendChild(buildTimeBlock("自定义提醒", customs.map(c => ({text: "★ " + c.text, priority: c.priority})), ds, false, "custom"));
+    // 每周任务
+    const weekly = (WEEKLY_TASKS[weekday] || []).filter(t => state.taskVisible.weekly[weekday] && state.taskVisible.weekly[weekday][t.text]);
+    if (weekly.length) {
+      container.appendChild(buildTimeBlock("每周任务", weekly, ds, false, "weekly"));
+    }
   }
 }
 
@@ -878,8 +1026,15 @@ function buildTimeBlock(title, tasks, ds, active, type) {
   list.className = "task-list";
 
   tasks.forEach(t => {
-    const key = ds + "|" + title + "|" + t.text;
-    const done = state.checks[key] || false;
+    let key, done;
+    if (title === "每周任务") {
+      if (!state.weeklyChecks) state.weeklyChecks = {};
+      key = getWeekStart(ds) + "|" + t.text;
+      done = state.weeklyChecks[key] || false;
+    } else {
+      key = ds + "|" + title + "|" + t.text;
+      done = state.checks[key] || false;
+    }
     const row = document.createElement("div");
     row.className = "task-row" + (done ? " done" : "") + (t.high ? " high-priority" : "");
     row.innerHTML = `
@@ -887,7 +1042,11 @@ function buildTimeBlock(title, tasks, ds, active, type) {
       <div class="text">${t.text}</div>
     `;
     row.onclick = () => {
-      state.checks[key] = !state.checks[key];
+      if (title === "每周任务") {
+        state.weeklyChecks[key] = !state.weeklyChecks[key];
+      } else {
+        state.checks[key] = !state.checks[key];
+      }
       saveState();
       renderTasks();
     };
@@ -902,12 +1061,11 @@ function buildTimeBlock(title, tasks, ds, active, type) {
 function renderInfo() {
   const sec = document.getElementById("infoSection");
   const rows = [
-    { label: "备/备注", key: "note", cls: "" },
-    { label: "核心目标", key: "goal", cls: "" },
-    { label: "长期服排期", key: "longTerm", cls: "navy" },
-    { label: "抽卡规划", key: "gacha", cls: "gold" },
-    { label: "养成优先级", key: "grow", cls: "gold" },
-  ];
+  { label: "排期记录", key: "longTerm", cls: "navy" },
+  { label: "抽卡规划", key: "gacha", cls: "gold" },
+  { label: "养成计划", key: "grow", cls: "gold" },
+];
+
   let html = "";
   rows.forEach(r => {
     const v = state[r.key] || "";
@@ -917,23 +1075,21 @@ function renderInfo() {
     </div>`;
   });
   // 礼包屋
-  let giftText = "未设置";
-  if (state.giftDays !== null && state.giftDays !== "") {
-    const next = addDays(todayStr(), parseInt(state.giftDays));
-    const d = parseDate(next);
-    giftText = `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())}`;
-  }
-  html += `<div class="info-row">
-    <span class="info-label navy">礼包屋倒计时</span>
-    <div class="info-value ${state.giftDays !== null && state.giftDays !== "" ? "" : "empty"}">${giftText}</div>
-  </div>`;
+let giftText = "未设置";
+if (state.giftDays !== null && state.giftDays !== "") {
+  const next = addDays(todayStr(), parseInt(state.giftDays));
+  const d = parseDate(next);
+  giftText = `到 ${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} 就可以获得一颗美味黑蛋`;
+}
+html += `<div class="info-row">
+  <span class="info-label navy">礼包屋倒计时</span>
+  <div class="info-value ${state.giftDays !== null && state.giftDays !== "" ? "" : "empty"}">${giftText}</div>
+</div>`;
   sec.innerHTML = html;
 }
 
 /* ================= 设置页 ================= */
 function fillSettings() {
-  document.getElementById("setNote").value = state.note || "";
-  document.getElementById("setGoal").value = state.goal || "";
   document.getElementById("setLong").value = state.longTerm || "";
   document.getElementById("setGacha").value = state.gacha || "";
   document.getElementById("setGrow").value = state.grow || "";
@@ -941,6 +1097,8 @@ function fillSettings() {
     document.getElementById("setGiftDays").value = state.giftDays;
   }
   refreshLists();
+  renderTaskToggles();
+
 }
 
 function refreshLists() {
@@ -970,12 +1128,14 @@ function refreshLists() {
   const customList = document.getElementById("customList");
   customList.innerHTML = "";
   state.customs.forEach((c, i) => {
-    const row = document.createElement("div");
-    row.className = "item-row";
-    row.innerHTML = `<div>${c.text}<span class="meta">${c.date} · ${c.priority}</span></div>
-      <div class="del" onclick="deleteCustom(${i})">✕</div>`;
-    customList.appendChild(row);
-  });
+  const row = document.createElement("div");
+  row.className = "item-row";
+  const slotNames = { morning: "早上", afternoon: "下午", evening: "晚上" };
+  const slotText = (c.slots || []).map(s => slotNames[s] || s).join("/");
+  row.innerHTML = `<div>${c.text}<span class="meta">${c.date} · ${slotText} · ${c.priority}</span></div>
+    <div class="del" onclick="deleteCustom(${i})">✕</div>`;
+  customList.appendChild(row);
+});
 
   // 寮活动
   const liaoList = document.getElementById("liaoList");
@@ -1017,29 +1177,24 @@ function addCustom() {
   const text = document.getElementById("customText").value.trim();
   const date = document.getElementById("customDate").value;
   const priority = document.getElementById("customPriority").value;
-  if (!text || !date) return alert("请填写完整");
-  state.customs.push({ text, date, priority });
+  const slots = [];
+  if (document.getElementById("slotMorning").checked) slots.push("morning");
+  if (document.getElementById("slotAfternoon").checked) slots.push("afternoon");
+  if (document.getElementById("slotEvening").checked) slots.push("evening");
+  if (!text || !date || slots.length === 0) return alert("请填写完整，并至少选择一个时段");
+  state.customs.push({ text, date, slots, priority });
   saveState();
   document.getElementById("customText").value = "";
+  document.getElementById("slotMorning").checked = false;
+  document.getElementById("slotAfternoon").checked = false;
+  document.getElementById("slotEvening").checked = false;
   refreshLists();
 }
 function deleteCustom(i) { state.customs.splice(i,1); saveState(); refreshLists(); }
 
-function addLiao() {
-  const day = parseInt(document.getElementById("liaoDay").value);
-  const time = document.getElementById("liaoTime").value;
-  const text = document.getElementById("liaoText").value.trim();
-  if (!text) return alert("请填写内容");
-  state.liaos.push({ day, time, text });
-  saveState();
-  document.getElementById("liaoText").value = "";
-  refreshLists();
-}
 function deleteLiao(i) { state.liaos.splice(i,1); saveState(); refreshLists(); }
 
 function saveInfo() {
-  state.note = document.getElementById("setNote").value;
-  state.goal = document.getElementById("setGoal").value;
   state.longTerm = document.getElementById("setLong").value;
   state.gacha = document.getElementById("setGacha").value;
   state.grow = document.getElementById("setGrow").value;
@@ -1062,6 +1217,88 @@ window.addEventListener("scroll", () => {
   if (window.scrollY > 200) btn.style.display = "block";
   else btn.style.display = "none";
 });
+function renderTaskToggles() {
+  const all = getAllFixedTasks();
+  const box = document.getElementById("taskToggleContainer");
+  if (!box) return;
+  let html = "";
+
+  // 早上
+  html += `<div class="toggle-group"><div class="toggle-group-title">早上</div>`;
+  all.morning.forEach(t => {
+    const id = "tv_morning_" + t.text;
+    const checked = state.taskVisible.morning[t.text] ? "checked" : "";
+    html += `<div class="toggle-item"><input type="checkbox" id="${id}" data-group="morning" data-text="${t.text}" ${checked}><label for="${id}">${t.text}</label></div>`;
+  });
+  html += `</div>`;
+
+  // 下午
+  html += `<div class="toggle-group"><div class="toggle-group-title">下午</div>`;
+  all.afternoon.forEach(t => {
+    const id = "tv_afternoon_" + t.text;
+    const checked = state.taskVisible.afternoon[t.text] ? "checked" : "";
+    html += `<div class="toggle-item"><input type="checkbox" id="${id}" data-group="afternoon" data-text="${t.text}" ${checked}><label for="${id}">${t.text}</label></div>`;
+  });
+  html += `</div>`;
+
+  // 晚上
+  html += `<div class="toggle-group"><div class="toggle-group-title">晚上</div>`;
+  all.evening.forEach(t => {
+    const id = "tv_evening_" + t.text;
+    const checked = state.taskVisible.evening[t.text] ? "checked" : "";
+    html += `<div class="toggle-item"><input type="checkbox" id="${id}" data-group="evening" data-text="${t.text}" ${checked}><label for="${id}">${t.text}</label></div>`;
+  });
+  html += `</div>`;
+
+  // 每周任务
+html += `<div class="toggle-group"><div class="toggle-group-title">每周任务</div>`;
+  const seen = new Set();
+  Object.keys(all.weekly).forEach(day => {
+    if (!all.weekly[day] || !all.weekly[day].length) return;
+    all.weekly[day].forEach(t => {
+      if (seen.has(t.text)) return;
+      seen.add(t.text);
+      // 用周一（day=1）的状态作为代表
+      const refDay = "1";
+      const checked = state.taskVisible.weekly[refDay] && state.taskVisible.weekly[refDay][t.text] ? "checked" : "";
+      const id = "tv_weekly_" + t.text;
+      html += `<div class="toggle-item"><input type="checkbox" id="${id}" data-group="weekly" data-text="${t.text}" ${checked}><label for="${id}">${t.text}</label></div>`;
+    });
+  });
+  html += `</div>`;
+
+  box.innerHTML = html;
+}
+
+function saveTaskVisible() {
+  document.querySelectorAll("#taskToggleContainer input[type=checkbox]").forEach(cb => {
+    const group = cb.dataset.group;
+    const text = cb.dataset.text;
+    if (group === "weekly") {
+      // 每周任务：所有天的同一个任务都同步
+      Object.keys(state.taskVisible.weekly).forEach(day => {
+        state.taskVisible.weekly[day][text] = cb.checked;
+      });
+    } else {
+      state.taskVisible[group][text] = cb.checked;
+    }
+  });
+  saveState();
+  alert("已保存显示设置");
+}
+function toggleTaskPanel() {
+  const panel = document.getElementById("taskTogglePanel");
+  const arrow = document.getElementById("taskPanelArrow");
+  if (!panel) return;
+  if (panel.style.display === "none") {
+    panel.style.display = "block";
+    arrow.classList.add("open");
+  } else {
+    panel.style.display = "none";
+    arrow.classList.remove("open");
+  }
+}
+
 </script>
 <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部">↑</button>
 </body>
