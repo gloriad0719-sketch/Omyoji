@@ -379,6 +379,82 @@
   box-shadow: 0 4px 12px rgba(58,46,36,0.2);
   opacity: 1;
 }
+  /* ================= 手机适配 ================= */
+@media (max-width: 768px) {
+  body { padding: 8px; }
+
+  .sheet { border-radius: 6px; }
+
+  /* 标题栏 */
+  .title-bar { padding: 10px 12px; }
+  .title-bar h1 { font-size: 14px; letter-spacing: 1px; }
+  .title-bar button { padding: 4px 10px; font-size: 11px; }
+
+  /* 月历 */
+  .calendar-section { padding: 8px 10px; }
+  .calendar-header .month-title { font-size: 15px; }
+  .calendar-header button { padding: 2px 8px; font-size: 11px; }
+  .week-head { font-size: 11px; padding: 5px 0; }
+  .day-cell { min-height: 56px; padding: 3px; gap: 2px; }
+  .day-cell .date-num { font-size: 12px; }
+  .event-chip { font-size: 9px; padding: 1px 3px; }
+
+  /* 任务区 */
+  .selected-section { padding: 10px 12px; }
+  .selected-head h2 { font-size: 13px; }
+  .selected-head .badge { font-size: 11px; padding: 1px 8px; }
+  .time-title { font-size: 13px; }
+  .task-row { font-size: 12px; padding: 6px 8px; gap: 6px; }
+  .task-row .box { width: 14px; height: 14px; font-size: 9px; }
+
+  /* 信息区 */
+  .info-section { padding: 10px 12px; }
+  .info-row { flex-wrap: wrap; gap: 4px; }
+  .info-label {
+    font-size: 11px;
+    padding: 2px 6px;
+    min-width: 60px;
+    margin-right: 6px;
+  }
+  .info-value { font-size: 12px; padding: 3px 4px; }
+
+  /* 设置页 */
+  .settings-section { padding: 12px; }
+  .settings-section h2 { font-size: 14px; }
+  .form-row { gap: 6px; margin-bottom: 8px; }
+  .form-row input, .form-row select {
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+  .form-row input[type="text"] { min-width: 100%; flex: 1 1 100%; }
+  .form-row input[type="date"] { flex: 1 1 45%; }
+  .form-row input[type="time"] { flex: 1 1 45%; }
+  .form-row input[type="number"] { flex: 1 1 45%; }
+  .form-row select { flex: 1 1 100%; }
+  .form-row button { flex: 1 1 100%; padding: 6px 12px; font-size: 12px; }
+  .form-row .info-label { flex: 1 1 100%; margin-bottom: 4px; text-align: left; }
+
+  .item-row { font-size: 12px; padding: 6px 8px; flex-wrap: wrap; gap: 4px; }
+  .item-row .meta { font-size: 10px; }
+
+  /* 回到顶部 */
+  #backToTop {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    right: 16px;
+    bottom: 16px;
+  }
+}
+
+/* 超小屏（比如 375px 以下） */
+@media (max-width: 400px) {
+  .title-bar h1 { font-size: 12px; letter-spacing: 0; }
+  .day-cell { min-height: 48px; }
+  .event-chip { font-size: 8px; }
+  .task-row { font-size: 11px; }
+  .info-label { font-size: 10px; min-width: 52px; }
+}
 </style>
 </head>
 <body>
