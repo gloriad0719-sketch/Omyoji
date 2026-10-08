@@ -455,6 +455,21 @@
   .task-row { font-size: 11px; }
   .info-label { font-size: 10px; min-width: 52px; }
 }
+@media (max-width: 768px) {
+  .calendar-section {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .month-grid {
+    min-width: 640px;   /* 保证七天排得下，超出的部分横向滚动 */
+  }
+  .day-cell {
+    min-height: 70px;
+  }
+  .event-chip {
+    font-size: 9px;
+  }
+}
 </style>
 </head>
 <body>
