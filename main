@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>阴阳师真全图养成打卡总表</title>
+<style>
+  :root {
+    --bg: #ede4d3;
+    --paper: #faf6ee;
+    --paper2: #fffdf8;
+    --navy: #2e3350;
+    --navy2: #3a3f5c;
+    --gold: #c9a227;
+    --gold-light: #e8d9a8;
+    --red: #b03a2e;
+    --red-light: #d9534f;
+    --text: #3a2e24;
+    --text-dim: #8a7a66;
+    --line: #c9b896;
+    --line-light: #e0d4bc;
+    --purple: #7a5a9a;
+    --blue: #4a6a8a;
+    --green: #5a8a5a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 16px;
+  }
+  .sheet {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(58,46,36,0.12);
+    overflow: hidden;
+  }
+  .title-bar {
+    background: linear-gradient(180deg, var(--navy), var(--navy2));
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid var(--gold);
+  }
+  .title-bar h1 {
+    color: var(--gold-light);
+    font-size: 20px;
+    letter-spacing: 4px;
+    font-weight: 600;
+  }
+  .title-bar button {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold-light);
+    padding: 5px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  .title-bar button:hover { background: var(--gold); color: var(--navy); }
+
+  /* 页面切换 */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* 月历 */
+  .calendar-section {
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--line);
+    background: var(--paper2);
+  }
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .calendar-header .month-title {
+    font-size: 18px;
+    color: var(--navy);
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+  .calendar-header .nav { display: flex; gap: 6px; }
+  .calendar-header button {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 3px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .calendar-header button:hover { border-color: var(--gold); color: var(--gold); }
+  .month-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    background: var(--line-light);
+    border: 1px solid var(--line-light);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .week-head {
+    background: var(--navy);
+    color: var(--gold-light);
+    text-align: center;
+    font-size: 13px;
+    padding: 8px 0;
+    letter-spacing: 1px;
+  }
+  .day-cell {
+    background: var(--paper);
+    min-height: 88px;
+    padding: 5px;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .day-cell:hover { background: rgba(201,162,39,0.08); }
+  .day-cell.other-month { background: var(--bg); opacity: 0.5; }
+  .day-cell.today { background: rgba(201,162,39,0.15); }
+  .day-cell.selected { outline: 2px solid var(--gold); outline-offset: -2px; }
+  .day-cell.scroll-day { background: rgba(176,58,46,0.06); }
+  .day-cell .date-num {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 600;
+    align-self: flex-start;
+  }
+  .day-cell.today .date-num { color: var(--red); }
+  .event-chip {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .event-chip.gold { background: #fdf8e8; color: #8a6a10; border-left: 3px solid var(--gold); }
+  .event-chip.red { background: #fdf0ee; color: var(--red); border-left: 3px solid var(--red); }
+  .event-chip.purple { background: #f6f0fa; color: var(--purple); border-left: 3px solid var(--purple); }
+  .event-chip.blue { background: #eef4f8; color: var(--blue); border-left: 3px solid var(--blue); }
+  .event-chip.green { background: #eef6ee; color: var(--green); border-left: 3px solid var(--green); }
+
+  /* 任务区 */
+  .selected-section {
+    padding: 14px 20px;
+    border-bottom: 2px solid var(--line);
+    background: var(--paper);
+  }
+  .selected-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .selected-head h2 {
+    font-size: 15px;
+    color: var(--navy);
+    letter-spacing: 1px;
+  }
+  .selected-head .badge {
+    font-size: 12px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+  }
+  .badge.scroll { color: var(--red); border-color: var(--red); background: #fdf0ee; }
+
+  .time-block { margin-bottom: 14px; }
+  .time-block:last-child { margin-bottom: 0; }
+  .time-title {
+    font-size: 14px;
+    color: var(--navy);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    padding-left: 8px;
+    border-left: 4px solid transparent;
+  }
+  .time-title.active {
+    color: var(--gold);
+    border-left-color: var(--gold);
+    font-weight: 700;
+  }
+  .time-title.scroll-title {
+    color: var(--red);
+    border-left-color: var(--red);
+    font-weight: 700;
+  }
+
+  .task-list { display: flex; flex-direction: column; gap: 4px; }
+  .task-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border: 1px solid var(--line-light);
+    border-radius: 4px;
+    background: var(--paper2);
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .task-row:hover { border-color: var(--gold); }
+  .task-row .box {
+    width: 15px;
+    height: 15px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: transparent;
+    background: var(--paper);
+    flex-shrink: 0;
+  }
+  .task-row.done .box { background: var(--gold); border-color: var(--gold); color: #fff; }
+  .task-row.done .text { text-decoration: line-through; color: var(--text-dim); }
+  .task-row .text { flex: 1; }
+  .task-row.high-priority {
+    background: #fdf0ee;
+    border-color: var(--red);
+    font-weight: 700;
+    color: var(--red);
+  }
+
+  /* 信息区 */
+  .info-section {
+    padding: 14px 20px;
+    background: var(--paper);
+    border-bottom: 2px solid var(--line);
+  }
+  .info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .info-row:last-child { margin-bottom: 0; }
+  .info-label {
+    background: var(--red);
+    color: #fff;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    margin-right: 10px;
+    min-width: 90px;
+    text-align: center;
+  }
+  .info-label.navy { background: var(--navy); }
+  .info-label.gold { background: var(--gold); color: #fff; }
+  .info-value {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text);
+    padding: 4px 6px;
+    border-bottom: 1px dashed var(--line);
+    min-height: 26px;
+  }
+  .info-value.empty { color: var(--text-dim); font-style: italic; }
+
+  .footer {
+    text-align: center;
+    padding: 10px;
+    font-size: 11px;
+    color: var(--text-dim);
+    background: var(--paper2);
+    border-top: 1px solid var(--line-light);
+  }
+
+  /* 设置页 */
+  .settings-section {
+    padding: 16px 20px;
+    border-bottom: 2px solid var(--line);
+  }
+  .settings-section h2 {
+    font-size: 15px;
+    color: var(--navy);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line-light);
+  }
+  .form-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .form-row input, .form-row select {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    font-family: inherit;
+  }
+  .form-row input:focus, .form-row select:focus { border-color: var(--gold); }
+  .form-row input[type="text"] { flex: 1; min-width: 160px; }
+  .form-row button {
+    background: var(--navy);
+    color: var(--gold-light);
+    border: none;
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+  .form-row button:hover { background: var(--navy2); }
+
+  .item-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    border: 1px solid var(--line-light);
+    border-radius: 4px;
+    background: var(--paper2);
+    font-size: 13px;
+  }
+  .item-row .meta { color: var(--text-dim); font-size: 11px; margin-left: 8px; }
+  .item-row .del {
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0 4px;
+  }
+  .item-row .del:hover { color: var(--red); }
+
+  @media (max-width: 640px) {
+    .title-bar h1 { font-size: 14px; letter-spacing: 2px; }
+    .day-cell { min-height: 70px; }
+    .event-chip { font-size: 10px; }
+    .info-label { min-width: 70px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <div class="title-bar">
+    <h1>阴阳师真全图养成打卡总表</h1>
+    <div>
+      <button id="btnHome" onclick="showPage('home')" style="display:none;">返回首页</button>
+      <button id="btnSettings" onclick="showPage('settings')">⚙ 设置</button>
+    </div>
+  </div>
+
+  <!-- ========== 首页 ========== -->
+  <div class="page active" id="page-home">
+
+    <div class="calendar-section">
+      <div class="calendar-header">
+        <div class="month-title" id="monthTitle">2026年 10月</div>
+        <div class="nav">
+          <button onclick="changeMonth(-1)">← 上月</button>
+          <button onclick="goToday()">今天</button>
+          <button onclick="changeMonth(1)">下月 →</button>
+        </div>
+      </div>
+      <div class="month-grid" id="monthGrid"></div>
+    </div>
+
+    <div class="selected-section">
+      <div class="selected-head">
+        <h2 id="selectedTitle">今日任务</h2>
+        <span class="badge" id="selectedBadge">非绘卷期</span>
+      </div>
+      <div id="taskContainer"></div>
+    </div>
+
+    <div class="info-section" id="infoSection"></div>
+
+    <div class="footer">数据保存在本地浏览器 · 清缓存会丢失</div>
+  </div>
+
+  <!-- ========== 设置页 ========== -->
+  <div class="page" id="page-settings">
+
+    <div class="settings-section">
+      <h2>活动管理</h2>
+      <div class="form-row">
+        <input type="text" id="eventName" placeholder="活动名称">
+        <input type="date" id="eventStart">
+        <input type="date" id="eventEnd">
+        <select id="eventColor">
+          <option value="gold">金色（卡池）</option>
+          <option value="red">红色（绘卷）</option>
+          <option value="purple">紫色（联动）</option>
+          <option value="blue">蓝色（日常）</option>
+          <option value="green">绿色（自定义）</option>
+        </select>
+        <button onclick="addEvent()">添加</button>
+      </div>
+      <div class="item-list" id="eventList"></div>
+    </div>
+
+    <div class="settings-section">
+      <h2>绘卷期管理</h2>
+      <div class="form-row">
+        <input type="date" id="scrollStart">
+        <select id="scrollDays">
+          <option value="1">1天</option>
+          <option value="2">2天</option>
+          <option value="3">3天</option>
+        </select>
+        <button onclick="addScroll()">添加</button>
+      </div>
+      <div class="item-list" id="scrollList"></div>
+    </div>
+
+    <div class="settings-section">
+      <h2>自定义提醒</h2>
+      <div class="form-row">
+        <input type="text" id="customText" placeholder="提醒内容">
+        <input type="date" id="customDate">
+        <select id="customPriority">
+          <option value="必做">必做</option>
+          <option value="可选">可选</option>
+          <option value="最高">最高</option>
+        </select>
+        <button onclick="addCustom()">添加</button>
+      </div>
+      <div class="item-list" id="customList"></div>
+    </div>
+
+    <div class="settings-section">
+      <h2>自定义寮活动（每周两次）</h2>
+      <div class="form-row">
+        <select id="liaoDay">
+          <option value="5">周五</option>
+          <option value="6">周六</option>
+          <option value="0">周日</option>
+          <option value="1">周一</option>
+          <option value="2">周二</option>
+          <option value="3">周三</option>
+          <option value="4">周四</option>
+        </select>
+        <input type="time" id="liaoTime" value="19:30">
+        <input type="text" id="liaoText" placeholder="内容，如：狭间暗域">
+        <button onclick="addLiao()">添加</button>
+      </div>
+      <div class="item-list" id="liaoList"></div>
+    </div>
+
+    <div class="settings-section">
+      <h2>信息区内容</h2>
+      <div class="form-row">
+        <span class="info-label">备/备注</span>
+        <input type="text" id="setNote" placeholder="备注" style="flex:1;">
+      </div>
+      <div class="form-row">
+        <span class="info-label">核心目标</span>
+        <input type="text" id="setGoal" placeholder="核心目标" style="flex:1;">
+      </div>
+      <div class="form-row">
+        <span class="info-label navy">长期服排期</span>
+        <input type="text" id="setLong" placeholder="长期服排期" style="flex:1;">
+      </div>
+      <div class="form-row">
+        <span class="info-label gold">抽卡规划</span>
+        <input type="text" id="setGacha" placeholder="抽卡规划" style="flex:1;">
+      </div>
+      <div class="form-row">
+        <span class="info-label gold">养成优先级</span>
+        <input type="text" id="setGrow" placeholder="养成优先级" style="flex:1;">
+      </div>
+      <div class="form-row">
+        <span class="info-label navy">礼包屋倒计时</span>
+        <input type="number" id="setGiftDays" placeholder="还有几天" style="width:100px;">
+        <span style="font-size:12px;color:var(--text-dim);">天</span>
+        <button onclick="saveInfo()">保存</button>
+      </div>
+    </div>
+
+    <div class="footer">设置完成后返回首页查看效果</div>
+  </div>
+
+</div>
+
+<script>
+/* ================= 状态 ================= */
+function loadState() {
+  try {
+    const raw = localStorage.getItem("yys_checkin_v6");
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return {
+    events: [
+      { name: "咲叶绘卷", start: "2026-10-10", end: "2026-10-12", color: "red" },
+      { name: "SSR咲叶", start: "2026-10-10", end: "2026-10-21", color: "gold" },
+      { name: "UR大天狗", start: "2026-10-25", end: "2026-11-05", color: "gold" },
+    ],
+    scrolls: [ { start: "2026-10-10", days: 3 } ],
+    customs: [],
+    liaos: [
+      { day: 5, time: "19:30", text: "阴阳寮宴会" },
+      { day: 6, time: "19:30", text: "狭间暗域" },
+      { day: 0, time: "19:30", text: "狭间暗域 + 阴阳寮宴会" },
+    ],
+    checks: {},
+    note: "",
+    goal: "",
+    longTerm: "",
+    gacha: "",
+    grow: "",
+    giftDays: null
+  };
+}
+let state = loadState();
+function saveState() { localStorage.setItem("yys_checkin_v6", JSON.stringify(state)); }
+
+/* ================= 工具 ================= */
+function pad(n){ return String(n).padStart(2,"0"); }
+function dateStr(d){ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function todayStr(){ return dateStr(new Date()); }
+function parseDate(s){ return new Date(s + "T00:00:00"); }
+function addDays(s, n){ const d = parseDate(s); d.setDate(d.getDate()+n); return dateStr(d); }
+function diffDays(a, b){ return Math.floor((parseDate(b) - parseDate(a)) / 86400000); }
+function formatDay(ds) {
+  const d = parseDate(ds);
+  return `${d.getMonth()+1}.${d.getDate()} 周${["日","一","二","三","四","五","六"][d.getDay()]}`;
+}
+function getWeekday(ds) { return parseDate(ds).getDay(); }
+function isScrollDay(ds) {
+  return state.scrolls.some(s => {
+    const diff = diffDays(s.start, ds);
+    return diff >= 0 && diff < s.days;
+  });
+}
+
+/* ================= 任务内容 ================= */
+const MORNING_TASKS = [
+  { text: "完成一键签到", priority: "必做" },
+  { text: "完成结界寄养", priority: "必做" },
+  { text: "检查封印悬赏", priority: "必做" },
+  { text: "检查式神委派，留意“想吃鱼的猫”", priority: "必做" },
+  { text: "完成活动任务与花合战任务", priority: "必做" },
+];
+const MORNING_KIRIN = { text: "完成狩猎战（麒麟）", priority: "必做" };
+
+const AFTERNOON_TASKS = [
+  { text: "完成结界寄养", priority: "必做" },
+  { text: "检查式神委派，留意“想吃鱼的猫”", priority: "必做" },
+  { text: "完成地域鬼王，分享", priority: "必做" },
+  { text: "完成一次魂土，领取秋田犬加成", priority: "必做" },
+];
+
+const EVENING_TASKS = [
+  { text: "完成结界寄养", priority: "必做" },
+  { text: "检查封印悬赏", priority: "必做" },
+  { text: "再次检查式神委派，留意“想吃鱼的猫”", priority: "必做" },
+  { text: "完成逢魔之时与彼世逢魔（按需）", priority: "必做" },
+];
+const EVENING_YINJIE = { text: "完成阴界之门", priority: "必做" };
+
+const WEEKLY_TASKS = {
+  1: [ { text: "完成百鬼奕/百鬼棋局", priority: "必做" }, { text: "完成协同斗技", priority: "必做" }, { text: "斗技", priority: "必做" } ],
+  2: [ { text: "完成百鬼奕/百鬼棋局", priority: "必做" }, { text: "完成协同斗技", priority: "必做" }, { text: "斗技", priority: "必做" } ],
+  3: [ { text: "完成百鬼奕/百鬼棋局", priority: "必做" }, { text: "完成协同斗技", priority: "必做" }, { text: "斗技", priority: "必做" } ],
+  4: [ { text: "完成百鬼奕/百鬼棋局", priority: "必做" }, { text: "完成协同斗技", priority: "必做" }, { text: "斗技", priority: "必做" } ],
+  5: [ { text: "完成百鬼奕/百鬼棋局", priority: "必做" }, { text: "完成协同斗技", priority: "必做" }, { text: "斗技", priority: "必做" } ],
+  6: [ { text: "完成百鬼奕/百鬼棋局", priority: "必做" }, { text: "完成协同斗技", priority: "必做" }, { text: "斗技", priority: "必做" } ],
+  0: [ { text: "检查本周所有内容", priority: "必做" } ]
+};
+
+/* ================= 页面切换 ================= */
+function showPage(name) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById("page-" + name).classList.add("active");
+  document.getElementById("btnHome").style.display = name === "settings" ? "inline-block" : "none";
+  document.getElementById("btnSettings").style.display = name === "home" ? "inline-block" : "none";
+  if (name === "settings") fillSettings();
+  if (name === "home") { renderCalendar(); renderTasks(); renderInfo(); }
+}
+
+/* ================= 月历 ================= */
+let currentMonth = new Date();
+let selectedDate = todayStr();
+
+function renderCalendar() {
+  const grid = document.getElementById("monthGrid");
+  grid.innerHTML = "";
+  const year = currentMonth.getFullYear();
+  const month = currentMonth.getMonth();
+  document.getElementById("monthTitle").textContent = `${year}年 ${month+1}月`;
+
+  ["日","一","二","三","四","五","六"].forEach(w => {
+    const h = document.createElement("div");
+    h.className = "week-head";
+    h.textContent = w;
+    grid.appendChild(h);
+  });
+
+  const firstDay = new Date(year, month, 1);
+  const startDay = firstDay.getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevMonthDays = new Date(year, month, 0).getDate();
+  const totalCells = Math.ceil((startDay + daysInMonth) / 7) * 7;
+
+  for (let i = 0; i < totalCells; i++) {
+    const cell = document.createElement("div");
+    cell.className = "day-cell";
+    let dayNum, ds, isOther = false;
+
+    if (i < startDay) {
+      dayNum = prevMonthDays - startDay + i + 1;
+      ds = dateStr(new Date(year, month - 1, dayNum));
+      isOther = true;
+      cell.classList.add("other-month");
+    } else if (i >= startDay + daysInMonth) {
+      dayNum = i - startDay - daysInMonth + 1;
+      ds = dateStr(new Date(year, month + 1, dayNum));
+      isOther = true;
+      cell.classList.add("other-month");
+    } else {
+      dayNum = i - startDay + 1;
+      ds = dateStr(new Date(year, month, dayNum));
+    }
+
+    if (ds === todayStr()) cell.classList.add("today");
+    if (ds === selectedDate) cell.classList.add("selected");
+    if (isScrollDay(ds)) cell.classList.add("scroll-day");
+
+    const numEl = document.createElement("div");
+    numEl.className = "date-num";
+    numEl.textContent = dayNum;
+    cell.appendChild(numEl);
+
+    state.events.forEach(e => {
+      if (ds >= e.start && ds <= e.end) {
+        const chip = document.createElement("div");
+        chip.className = "event-chip " + (e.color || "gold");
+        chip.textContent = e.name;
+        cell.appendChild(chip);
+      }
+    });
+
+    state.customs.filter(c => c.date === ds).forEach(c => {
+      const chip = document.createElement("div");
+      chip.className = "event-chip green";
+      chip.textContent = "★ " + c.text;
+      cell.appendChild(chip);
+    });
+
+    cell.onclick = () => {
+      selectedDate = ds;
+      renderCalendar();
+      renderTasks();
+    };
+    grid.appendChild(cell);
+  }
+}
+
+function changeMonth(dir) { currentMonth.setMonth(currentMonth.getMonth() + dir); renderCalendar(); }
+function goToday() { currentMonth = new Date(); selectedDate = todayStr(); renderCalendar(); renderTasks(); }
+
+/* ================= 任务渲染 ================= */
+function renderTasks() {
+  const ds = selectedDate;
+  const scroll = isScrollDay(ds);
+  const weekday = getWeekday(ds);
+  const now = new Date();
+  const hour = now.getHours();
+  let active = "";
+  if (hour >= 5 && hour < 12) active = "morning";
+  else if (hour >= 12 && hour < 18) active = "afternoon";
+  else active = "evening";
+
+  document.getElementById("selectedTitle").textContent = formatDay(ds) + " 任务";
+  const badge = document.getElementById("selectedBadge");
+  badge.textContent = scroll ? "绘卷期" : "非绘卷期";
+  badge.className = "badge" + (scroll ? " scroll" : "");
+
+  const container = document.getElementById("taskContainer");
+  container.innerHTML = "";
+
+  if (scroll) {
+    // 绘卷期合并列表
+    const list = [
+      { text: "★ 刷咲叶绘卷（最高优先级）", priority: "最高", high: true },
+      { text: "完成一键签到", priority: "必做" },
+      { text: "完成结界寄养", priority: "必做" },
+      { text: "检查封印悬赏", priority: "必做" },
+      { text: "检查式神委派，留意“想吃鱼的猫”", priority: "必做" },
+      { text: "完成活动任务与花合战任务", priority: "必做" },
+      { text: "完成地域鬼王，分享", priority: "必做" },
+      { text: "完成一次魂土，领取秋田犬加成", priority: "必做" },
+      { text: "完成逢魔之时与彼世逢魔（看情况）", priority: "必做" },
+    ];
+    if ([1,2,3,4].includes(weekday)) list.push({ text: "完成狩猎战（麒麟）", priority: "必做" });
+    if ([5,6,0].includes(weekday)) list.push({ text: "完成阴界之门", priority: "必做" });
+    // 自定义寮活动
+    state.liaos.filter(l => l.day === weekday).forEach(l => {
+      list.push({ text: `完成阴阳寮活动：${l.text}（${l.time}）`, priority: "必做" });
+    });
+    // 神秘商人
+    if (weekday === 3 || weekday === 6) list.push({ text: "查看神秘商人", priority: "必做" });
+
+    container.appendChild(buildTimeBlock("绘卷期任务（合并）", list, ds, false, "scroll"));
+  } else {
+    // 正常每日
+    const morning = [...MORNING_TASKS];
+    if ([1,2,3,4].includes(weekday)) morning.push(MORNING_KIRIN);
+    container.appendChild(buildTimeBlock("早上", morning, ds, active === "morning"));
+
+    container.appendChild(buildTimeBlock("下午", AFTERNOON_TASKS, ds, active === "afternoon"));
+
+    const evening = [...EVENING_TASKS];
+    if ([5,6,0].includes(weekday)) evening.push(EVENING_YINJIE);
+    state.liaos.filter(l => l.day === weekday).forEach(l => {
+      evening.push({ text: `完成阴阳寮活动：${l.text}（${l.time}）`, priority: "必做" });
+    });
+    if (weekday === 3 || weekday === 6) evening.push({ text: "查看神秘商人", priority: "必做" });
+    container.appendChild(buildTimeBlock("晚上", evening, ds, active === "evening"));
+  }
+
+  // 每周任务
+  const weekly = WEEKLY_TASKS[weekday] || [];
+  if (weekly.length) {
+    container.appendChild(buildTimeBlock("每周任务", weekly, ds, false, "weekly"));
+  }
+
+  // 自定义提醒
+  const customs = state.customs.filter(c => c.date === ds);
+  if (customs.length) {
+    container.appendChild(buildTimeBlock("自定义提醒", customs.map(c => ({text: "★ " + c.text, priority: c.priority})), ds, false, "custom"));
+  }
+}
+
+function buildTimeBlock(title, tasks, ds, active, type) {
+  const block = document.createElement("div");
+  block.className = "time-block";
+  const titleEl = document.createElement("div");
+  titleEl.className = "time-title" + (active ? " active" : "") + (type === "scroll" ? " scroll-title" : "");
+  titleEl.textContent = `【${title}】`;
+  block.appendChild(titleEl);
+
+  const list = document.createElement("div");
+  list.className = "task-list";
+
+  tasks.forEach(t => {
+    const key = ds + "|" + title + "|" + t.text;
+    const done = state.checks[key] || false;
+    const row = document.createElement("div");
+    row.className = "task-row" + (done ? " done" : "") + (t.high ? " high-priority" : "");
+    row.innerHTML = `
+      <div class="box">✓</div>
+      <div class="text">${t.text}</div>
+    `;
+    row.onclick = () => {
+      state.checks[key] = !state.checks[key];
+      saveState();
+      renderTasks();
+    };
+    list.appendChild(row);
+  });
+
+  block.appendChild(list);
+  return block;
+}
+
+/* ================= 首页信息区（只读） ================= */
+function renderInfo() {
+  const sec = document.getElementById("infoSection");
+  const rows = [
+    { label: "备/备注", key: "note", cls: "" },
+    { label: "核心目标", key: "goal", cls: "" },
+    { label: "长期服排期", key: "longTerm", cls: "navy" },
+    { label: "抽卡规划", key: "gacha", cls: "gold" },
+    { label: "养成优先级", key: "grow", cls: "gold" },
+  ];
+  let html = "";
+  rows.forEach(r => {
+    const v = state[r.key] || "";
+    html += `<div class="info-row">
+      <span class="info-label ${r.cls}">${r.label}</span>
+      <div class="info-value ${v ? "" : "empty"}">${v || "未设置（请到设置页修改）"}</div>
+    </div>`;
+  });
+  // 礼包屋
+  let giftText = "未设置";
+  if (state.giftDays !== null && state.giftDays !== "") {
+    const next = addDays(todayStr(), parseInt(state.giftDays));
+    const d = parseDate(next);
+    giftText = `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())}`;
+  }
+  html += `<div class="info-row">
+    <span class="info-label navy">礼包屋倒计时</span>
+    <div class="info-value ${state.giftDays !== null && state.giftDays !== "" ? "" : "empty"}">${giftText}</div>
+  </div>`;
+  sec.innerHTML = html;
+}
+
+/* ================= 设置页 ================= */
+function fillSettings() {
+  document.getElementById("setNote").value = state.note || "";
+  document.getElementById("setGoal").value = state.goal || "";
+  document.getElementById("setLong").value = state.longTerm || "";
+  document.getElementById("setGacha").value = state.gacha || "";
+  document.getElementById("setGrow").value = state.grow || "";
+  if (state.giftDays !== null && state.giftDays !== "") {
+    document.getElementById("setGiftDays").value = state.giftDays;
+  }
+  refreshLists();
+}
+
+function refreshLists() {
+  // 活动
+  const eventList = document.getElementById("eventList");
+  eventList.innerHTML = "";
+  state.events.forEach((e, i) => {
+    const row = document.createElement("div");
+    row.className = "item-row";
+    row.innerHTML = `<div>${e.name}<span class="meta">${e.start} ~ ${e.end} · ${e.color}</span></div>
+      <div class="del" onclick="deleteEvent(${i})">✕</div>`;
+    eventList.appendChild(row);
+  });
+
+  // 绘卷
+  const scrollList = document.getElementById("scrollList");
+  scrollList.innerHTML = "";
+  state.scrolls.forEach((s, i) => {
+    const row = document.createElement("div");
+    row.className = "item-row";
+    row.innerHTML = `<div>${s.start} 起 ${s.days} 天</div>
+      <div class="del" onclick="deleteScroll(${i})">✕</div>`;
+    scrollList.appendChild(row);
+  });
+
+  // 自定义
+  const customList = document.getElementById("customList");
+  customList.innerHTML = "";
+  state.customs.forEach((c, i) => {
+    const row = document.createElement("div");
+    row.className = "item-row";
+    row.innerHTML = `<div>${c.text}<span class="meta">${c.date} · ${c.priority}</span></div>
+      <div class="del" onclick="deleteCustom(${i})">✕</div>`;
+    customList.appendChild(row);
+  });
+
+  // 寮活动
+  const liaoList = document.getElementById("liaoList");
+  liaoList.innerHTML = "";
+  const dayNames = ["周日","周一","周二","周三","周四","周五","周六"];
+  state.liaos.forEach((l, i) => {
+    const row = document.createElement("div");
+    row.className = "item-row";
+    row.innerHTML = `<div>${dayNames[l.day]} ${l.time} · ${l.text}</div>
+      <div class="del" onclick="deleteLiao(${i})">✕</div>`;
+    liaoList.appendChild(row);
+  });
+}
+
+function addEvent() {
+  const name = document.getElementById("eventName").value.trim();
+  const start = document.getElementById("eventStart").value;
+  const end = document.getElementById("eventEnd").value;
+  const color = document.getElementById("eventColor").value;
+  if (!name || !start || !end) return alert("请填写完整");
+  state.events.push({ name, start, end, color });
+  saveState();
+  document.getElementById("eventName").value = "";
+  refreshLists();
+}
+function deleteEvent(i) { state.events.splice(i,1); saveState(); refreshLists(); }
+
+function addScroll() {
+  const start = document.getElementById("scrollStart").value;
+  const days = parseInt(document.getElementById("scrollDays").value);
+  if (!start) return alert("请选择起始日期");
+  state.scrolls.push({ start, days });
+  saveState();
+  refreshLists();
+}
+function deleteScroll(i) { state.scrolls.splice(i,1); saveState(); refreshLists(); }
+
+function addCustom() {
+  const text = document.getElementById("customText").value.trim();
+  const date = document.getElementById("customDate").value;
+  const priority = document.getElementById("customPriority").value;
+  if (!text || !date) return alert("请填写完整");
+  state.customs.push({ text, date, priority });
+  saveState();
+  document.getElementById("customText").value = "";
+  refreshLists();
+}
+function deleteCustom(i) { state.customs.splice(i,1); saveState(); refreshLists(); }
+
+function addLiao() {
+  const day = parseInt(document.getElementById("liaoDay").value);
+  const time = document.getElementById("liaoTime").value;
+  const text = document.getElementById("liaoText").value.trim();
+  if (!text) return alert("请填写内容");
+  state.liaos.push({ day, time, text });
+  saveState();
+  document.getElementById("liaoText").value = "";
+  refreshLists();
+}
+function deleteLiao(i) { state.liaos.splice(i,1); saveState(); refreshLists(); }
+
+function saveInfo() {
+  state.note = document.getElementById("setNote").value;
+  state.goal = document.getElementById("setGoal").value;
+  state.longTerm = document.getElementById("setLong").value;
+  state.gacha = document.getElementById("setGacha").value;
+  state.grow = document.getElementById("setGrow").value;
+  const gd = document.getElementById("setGiftDays").value;
+  state.giftDays = gd === "" ? null : parseInt(gd);
+  saveState();
+  alert("已保存");
+}
+
+/* ================= 初始化 ================= */
+document.getElementById("customDate").value = todayStr();
+document.getElementById("eventStart").value = todayStr();
+document.getElementById("eventEnd").value = todayStr();
+document.getElementById("scrollStart").value = todayStr();
+renderCalendar();
+renderTasks();
+renderInfo();
+</script>
+</body>
+</html>
