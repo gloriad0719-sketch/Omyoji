@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>阴阳师真全图养成打卡总表</title>
+<title>大人，就等你了</title>
 <style>
   :root {
     --bg: #ede4d3;
@@ -351,6 +351,34 @@
     .event-chip { font-size: 10px; }
     .info-label { min-width: 70px; font-size: 11px; }
   }
+#backToTop {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--paper2);
+  color: var(--navy);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 2px 8px rgba(58,46,36,0.12);
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, color 0.15s;
+  z-index: 999;
+  display: none;
+  opacity: 0.9;
+}
+#backToTop:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold);
+  color: var(--gold);
+  box-shadow: 0 4px 12px rgba(58,46,36,0.2);
+  opacity: 1;
+}
 </style>
 </head>
 <body>
@@ -358,7 +386,7 @@
 <div class="sheet">
 
   <div class="title-bar">
-    <h1>阴阳师真全图养成打卡总表</h1>
+    <h1>阴阳师养成</h1>
     <div>
       <button id="btnHome" onclick="showPage('home')" style="display:none;">返回首页</button>
       <button id="btnSettings" onclick="showPage('settings')">⚙ 设置</button>
@@ -938,6 +966,12 @@ document.getElementById("scrollStart").value = todayStr();
 renderCalendar();
 renderTasks();
 renderInfo();
+window.addEventListener("scroll", () => {
+  const btn = document.getElementById("backToTop");
+  if (window.scrollY > 200) btn.style.display = "block";
+  else btn.style.display = "none";
+});
 </script>
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部">↑</button>
 </body>
 </html>
